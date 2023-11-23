@@ -1,0 +1,5 @@
+.page-button-container {
+  justify-content: center;
+  display: inline-flex;
+  gap: 10px; /* 设置按钮之间的间距 */
+}

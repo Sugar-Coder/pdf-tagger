@@ -1,0 +1,31 @@
+.LeftPanel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    float: left;
+    width: 20%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #151515; /* Set the background color to a dark color */
+    color: white;
+}
+
+.LeftPanel h2 {
+    margin-bottom: 10px;
+}
+
+.LeftPanel ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.LeftPanel li {
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.LeftPanel li:hover {
+    text-decoration: underline;
+}

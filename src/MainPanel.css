@@ -1,0 +1,6 @@
+.MainPanel {
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-left: 20%;
+}

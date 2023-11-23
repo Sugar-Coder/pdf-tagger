@@ -4,6 +4,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 // import type { PDFDocumentProxy } from 'pdfjs-dist';
+import "./PdfViewerComponent.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -21,14 +22,27 @@ const PdfViewerComponent: React.FC<PdfViewerComponentProps> = ({ pdfUrl }) => {
       setNumPages(numPages);
       console.log("total page:", numPages);
     }
+    function nextPage() {
+      if (numPages && pageNumber < numPages) {
+        setPageNumber(pageNumber + 1);
+      }
+    }
+    function prevPage() {
+      if (pageNumber > 1) {
+        setPageNumber(pageNumber - 1);
+      }
+    }
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-          {numPages &&
-            Array.from(new Array(numPages), (el, index) => (
-              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-            ))}
-        </Document>
+      <div>
+        <div className="page-button-container">
+          <button onClick={prevPage}>Prev</button>
+          <button onClick={nextPage}>Next</button>
+        </div>
+        <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+            {numPages && <Page pageNumber={pageNumber} />}
+          </Document>
+        </div>
       </div>
     );
   };

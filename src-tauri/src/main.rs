@@ -7,9 +7,17 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+#[tauri::command]
+fn file_list() -> Vec<String> {
+    let mut files = Vec::new();
+    files.push("file1.pdf".to_string());
+    files.push("file2.pdf".to_string());
+    files
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, file_list])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

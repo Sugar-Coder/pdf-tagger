@@ -1,7 +1,10 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+.pdf-container {
+  height: 500px;
+  overflow-y: scroll;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+.button-container {
+  justify-content: center;
+  display: flex;
+  gap: 10px; /* 设置按钮之间的间距 */
 }
