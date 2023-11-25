@@ -24,8 +24,18 @@
 .LeftPanel li {
     margin-bottom: 5px;
     cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 8px;
 }
 
 .LeftPanel li:hover {
     text-decoration: underline;
 }
+
+.LeftPanel li.selected {
+    /* Your styles for selected li element */
+    background-color: #323030;
+  }

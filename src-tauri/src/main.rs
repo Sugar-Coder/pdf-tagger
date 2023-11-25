@@ -14,7 +14,7 @@ fn file_list() -> Vec<db::Files> {
 }
 
 #[tauri::command]
-fn add_file(path: String) -> usize {
+fn file_add(path: String) -> usize {
     let size = match db::insert_to_files_table(&path) {
         Ok(size) => size,
         Err(_) => 0,
@@ -24,7 +24,7 @@ fn add_file(path: String) -> usize {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![file_list])
+        .invoke_handler(tauri::generate_handler![file_list, file_add])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

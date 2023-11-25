@@ -43,7 +43,36 @@ flex布局，默认布局方式``flex-direction: row``
 
 
 **2023.11.25**
-选取sqlite作为数据库存储，用
-Files表，包含已经被映射的文件路径
+
+选取sqlite作为数据库存储，用``cargo add rusqlite``.
+sqlite数据库文件（开发用）放在根目录下``data/dev.db``
+
+创建Files表，包含已经被映射的文件路径
 id: 主键，自增
 path: 文件绝对路径
+
+在LeftPanel中展示数据库中已有的文件（路径）
+后端command返回的类型要实现Serialize trait
+```rust
+use serde::Serialize;
+
+#[derive(Debug, Serialize)]
+pub struct Files {
+    pub id: i32,
+    pub path: String,
+}
+```
+前端调用revoke的时候，需要定义接收的类型，类型成员与后端定义一致
+```tsx
+interface PdfItem {
+    id: number;
+    path: string;
+}
+const [pdfList, setPdfList] = useState<PdfItem[]>([]);
+
+async function getPdfList() {
+    const pdfList = await (invoke("file_list") as Promise<PdfItem[]>);
+    console.log("pdfList:", pdfList);
+    setPdfList(pdfList);
+}
+```
