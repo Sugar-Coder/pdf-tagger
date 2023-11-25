@@ -1,23 +1,30 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+pub mod db;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn file_list() -> Vec<db::Files> {
+    let files = match db::select_from_files_table() {
+        Ok(files) => files,
+        Err(_) => {
+            Vec::new()
+        }
+    };
+    files
 }
 
 #[tauri::command]
-fn file_list() -> Vec<String> {
-    let mut files = Vec::new();
-    files.push("file1.pdf".to_string());
-    files.push("file2.pdf".to_string());
-    files
+fn add_file(path: String) -> usize {
+    let size = match db::insert_to_files_table(&path) {
+        Ok(size) => size,
+        Err(_) => 0,
+    };
+    size
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, file_list])
+        .invoke_handler(tauri::generate_handler![file_list])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

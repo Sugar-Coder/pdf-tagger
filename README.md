@@ -35,8 +35,15 @@ yarn add react-pdf
 ```
 
 **2023.11.23**
+
 react useEffect
 第二个参数为``[]``时，只在组件挂载时调用一次
 
 flex布局，默认布局方式``flex-direction: row``
 
+
+**2023.11.25**
+选取sqlite作为数据库存储，用
+Files表，包含已经被映射的文件路径
+id: 主键，自增
+path: 文件绝对路径
