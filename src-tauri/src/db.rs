@@ -74,6 +74,14 @@ pub fn select_from_files_table() -> Result<Vec<Files>> {
     Ok(files)
 }
 
+pub fn delete_from_files_table(id: i32) -> Result<usize> {
+    let conn = create_connection();
+    conn.execute(
+        "DELETE FROM Files WHERE id = ?1",
+        [id],
+    )
+}
+
 #[test]
 fn create_table() {
     drop_files_table();

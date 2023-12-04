@@ -17,7 +17,8 @@
         "open": true
       },
       "dialog": {
-        "open": true
+        "open": true,
+        "confirm": true
       },
       "fs": {
         "readFile": true,

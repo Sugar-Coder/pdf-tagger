@@ -22,9 +22,18 @@ fn file_add(path: String) -> usize {
     size
 }
 
+#[tauri::command]
+fn file_delete(id: i32) -> usize {
+    let size = match db::delete_from_files_table(id) {
+        Ok(size) => size,
+        Err(_) => 0,
+    };
+    size
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![file_list, file_add])
+        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

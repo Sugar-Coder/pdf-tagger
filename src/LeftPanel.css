@@ -24,9 +24,9 @@
 .LeftPanel li {
     margin-bottom: 5px;
     cursor: pointer;
-    text-overflow: ellipsis;
+    /* text-overflow: clip; */
     white-space: nowrap;
-    overflow: hidden;
+    overflow: clip;
     cursor: pointer;
     padding: 8px;
 }
@@ -38,4 +38,8 @@
 .LeftPanel li.selected {
     /* Your styles for selected li element */
     background-color: #323030;
-  }
+}
+
+.context-menu:hover {
+    text-decoration: underline;
+}
