@@ -18,11 +18,13 @@
       },
       "dialog": {
         "open": true,
-        "confirm": true
+        "confirm": true,
+        "message": true
       },
       "fs": {
         "readFile": true,
-        "scope": ["$DESKTOP/*"]
+        "exists": true,
+        "scope": ["$DESKTOP/**"]
       }
     },
     "bundle": {

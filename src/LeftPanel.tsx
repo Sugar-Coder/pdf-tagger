@@ -1,9 +1,14 @@
 import React, {useEffect, useState, useRef} from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { open, confirm } from '@tauri-apps/api/dialog';
+import { open, confirm, message} from '@tauri-apps/api/dialog';
+import { exists } from '@tauri-apps/api/fs';
 import "./LeftPanel.css";
 
-const LeftPanel: React.FC = () => {
+interface LeftPanelProps {
+    setOpenedPdf: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const LeftPanel: React.FC<LeftPanelProps> = ({ setOpenedPdf }) => {
     // define the pdfList type
     interface PdfItem {
         id: number;
@@ -32,12 +37,37 @@ const LeftPanel: React.FC = () => {
         }
     };
 
-    const handlePdfClick = (pdfFileName: string) => {
+    function delete_file_by_id(id: number) {
+        invoke("file_delete", {id: id}).then((size) => {
+            if (typeof size === 'number' && size > 0) {
+                getPdfList();
+            } else {
+                console.log("no record deleted");
+            }
+        });
+    }
+
+    const handlePdfClick = (id: number, pdfFileName: string) => {
         if (selectedPdf === pdfFileName) {
             setSelectedPdf(null);
+            setOpenedPdf(null);
             return;
         }
-        setSelectedPdf(pdfFileName);
+        // todo check if the file exists
+        exists(pdfFileName).then((exists) => {
+            if (exists) {
+                setSelectedPdf(pdfFileName);
+                setOpenedPdf(pdfFileName);
+            } else {
+                console.log("File not exists:", pdfFileName);
+                // todo remove from database
+                message("File not exists, removing from database");
+                delete_file_by_id(id);
+            }
+        }).catch((error) => {
+            console.error('Error checking file exists:', error);
+            delete_file_by_id(id);
+        });
     };
 
     async function getPdfList() {
@@ -62,26 +92,24 @@ const LeftPanel: React.FC = () => {
                 multiple: false,
                 filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
             });
-            console.log(selectedPath);
-            if (!selectedPath) {
+            if (Array.isArray(selectedPath)) {
+                // user selected multiple files
+                console.log("multiple files selected");
+            } else if (selectedPath === null) {
+                // user cancelled the selection
                 console.log("No file selected");
-                return;
+            } else {
+                // user selected a single file
+                invoke("file_add", {path: selectedPath}).then((size) => {
+                    if (typeof size === 'number' && size > 0) {
+                        getPdfList();
+                        setOpenedPdf(selectedPath);
+                        setSelectedPdf(selectedPath);
+                    } else {
+                        console.log("no new record added");
+                    }
+                });
             }
-            invoke("file_add", {path: selectedPath}).then((size) => {
-                if (typeof size === 'number' && size > 0) {
-                    getPdfList();
-                } else {
-                    console.log("no new record added");
-                }
-            });
-            // revokeUrl(); // close previous pdf file
-            // // const selectedPath = selectedPaths[0];
-            // console.log("Selected file path:", selectedPath);
-            // const content = await readBinaryFile(selectedPath as string);
-            // const blob = new Blob([content], { type: 'application/pdf' });
-            // const dataUrl = URL.createObjectURL(blob);
-            // setPdfUrl(dataUrl);
-            // setPdfContent(content);
         } catch (error) {
             console.error('Error selecting or reading the file:', error);
         }
@@ -115,7 +143,7 @@ const LeftPanel: React.FC = () => {
                 {pdfList.map((item) => (
                     <li
                         key={item.id}
-                        onClick={() => handlePdfClick(item.path)}
+                        onClick={() => handlePdfClick(item.id, item.path)}
                         onContextMenu={(event) => handleContextMenu(event, item)}
                         className={selectedPdf === item.path ? 'selected' : ''}
                     >

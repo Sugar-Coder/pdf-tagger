@@ -79,3 +79,9 @@ LeftPanel.tsx中增加一个ContextMenu的react状态，保存被右键点击的
 如果你想在handleClickOutside函数中检查点击事件是否发生在右键菜单之外，你需要一个引用来访问右键菜单的DOM元素，这就是contextMenuRef的作用。你不能直接使用contextMenu来代替contextMenuRef，因为contextMenu并不是一个DOM元素的引用。
 
 点击右键菜单删除后，提升弹窗确认，在tauri.conf.json中增加allow
+
+**2023.12.6**
+关于tauri/api/fs的scope问题，如何让应用程序能访问到指定目录下的文件[link](https://github.com/tauri-apps/tauri/issues/4130)
+发现用dialog的open按钮打开后，允许访问不在scope中的文件
+
+对于不存在的文件（或者不在允许访问路径下的文件），自动删除path，根据path的绝对路径查找id进行删除

@@ -1,36 +1,32 @@
-import React, {useState} from 'react';
-import { open } from '@tauri-apps/api/dialog';
+import React, {useEffect, useState} from 'react';
+// import { open } from '@tauri-apps/api/dialog';
 import { readBinaryFile } from '@tauri-apps/api/fs';
 import PdfViewerComponent from "./PdfViewerComponent"
 
 import "./MainPanel.css";
 
-const MainPanel: React.FC = () => {
+interface MainPanelProps {
+    openedPdf: string | null;
+}
+
+const MainPanel: React.FC<MainPanelProps> = ({ openedPdf }) => {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-    const selectFile = async () => {
-        try {
-            const selectedPath = await open({
-                multiple: false,
-                filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+    useEffect(() => {
+        if (openedPdf) {
+            revokeUrl();
+            console.log("Opened pdf:", openedPdf);
+            readBinaryFile(openedPdf).then((content) => {
+                const blob = new Blob([content], { type: 'application/pdf' });
+                const dataUrl = URL.createObjectURL(blob);
+                setPdfUrl(dataUrl);
+            }).catch((error) => {
+                console.error('Error reading the file:', error);
             });
-            console.log(selectedPath);
-            if (!selectedPath) {
-                console.log("No file selected");
-                return;
-            }
-            revokeUrl(); // close previous pdf file
-            // const selectedPath = selectedPaths[0];
-            console.log("Selected file path:", selectedPath);
-            const content = await readBinaryFile(selectedPath as string);
-            const blob = new Blob([content], { type: 'application/pdf' });
-            const dataUrl = URL.createObjectURL(blob);
-            setPdfUrl(dataUrl);
-            // setPdfContent(content);
-        } catch (error) {
-            console.error('Error selecting or reading the file:', error);
+        } else {
+            revokeUrl();
         }
-    };
+    }, [openedPdf]);
 
     const revokeUrl = () => {
         if (pdfUrl) {
@@ -40,14 +36,10 @@ const MainPanel: React.FC = () => {
     }
     return (
         <div className='MainPanel'>
-            <h1>Welcome to Tauri!</h1>
+            <h1>Select your PDF!</h1>
             <p>Click on the button to select pdf file.</p>
-            <div className="button-container">
-            <button onClick={selectFile}>Select PDF File</button>
-            <button onClick={() => revokeUrl()}>Close PDF</button>
-            </div>
             <div>
-                {pdfUrl && <PdfViewerComponent pdfUrl={pdfUrl} />}
+                {pdfUrl && <PdfViewerComponent pdfUrl={pdfUrl} /> }
             </div>
         </div>
     )
