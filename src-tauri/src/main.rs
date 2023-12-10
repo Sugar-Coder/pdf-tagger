@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use std::process::Command;
 pub mod db;
 
 #[tauri::command]
@@ -31,9 +32,17 @@ fn file_delete(id: i32) -> usize {
     size
 }
 
+#[tauri::command]
+fn open_file_native(path: String) {
+    let _output = Command::new("open")
+        .arg(path)
+        .output()
+        .expect("failed to execute process");
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete])
+        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete, open_file_native])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

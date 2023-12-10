@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 // import { open } from '@tauri-apps/api/dialog';
 import { readBinaryFile } from '@tauri-apps/api/fs';
+import { invoke } from '@tauri-apps/api';
 import PdfViewerComponent from "./PdfViewerComponent"
 
 import "./MainPanel.css";
@@ -34,11 +35,18 @@ const MainPanel: React.FC<MainPanelProps> = ({ openedPdf }) => {
         }
         setPdfUrl(null);
     }
+
+    // todo: test
+    const handleOpenPdf = (pdfFileName: string) => {
+        invoke("open_file_native", {path: pdfFileName});
+    }
+
     return (
         <div className='MainPanel'>
             <h1>Select your PDF!</h1>
             <p>Click on the button to select pdf file.</p>
             <div>
+                {openedPdf && <button onClick={() => handleOpenPdf(openedPdf) }>Native Open</button>}
                 {pdfUrl && <PdfViewerComponent pdfUrl={pdfUrl} /> }
             </div>
         </div>
