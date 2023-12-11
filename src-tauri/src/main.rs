@@ -40,9 +40,17 @@ fn open_file_native(path: String) {
         .expect("failed to execute process");
 }
 
+#[tauri::command]
+fn add_tag(path: String, tag: String) -> Result<bool, String> {
+    match db::add_file_tag(path, tag) {
+        Ok(exists) => Ok(exists),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete, open_file_native])
+        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete, open_file_native, add_tag])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -36,9 +36,33 @@ const MainPanel: React.FC<MainPanelProps> = ({ openedPdf }) => {
         setPdfUrl(null);
     }
 
-    // todo: test
     const handleOpenPdf = (pdfFileName: string) => {
         invoke("open_file_native", {path: pdfFileName});
+    }
+
+    const [isAddingTag, setIsAddingTag] = useState<boolean>(false);
+    const [tagInput, setTagInput] = useState<string>("");
+
+    const handleAddTag = () => {
+        setIsAddingTag(true);
+    }
+
+    const handleTagInputKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            // console.log("adding tag", openedPdf, tagInput);
+            invoke("add_tag", {path: openedPdf, tag: tagInput}).then((exists) => {
+                if (typeof exists === 'boolean' && exists === true) {
+                    console.log("tag already exists");
+                    setTagInput('');
+                } else if (typeof exists === 'boolean' && exists === false) {
+                    console.log("file tagged!");
+                    setTagInput('');
+                    setIsAddingTag(false);
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
     }
 
     return (
@@ -46,7 +70,24 @@ const MainPanel: React.FC<MainPanelProps> = ({ openedPdf }) => {
             <h1>Select your PDF!</h1>
             <p>Click on the button to select pdf file.</p>
             <div>
-                {openedPdf && <button onClick={() => handleOpenPdf(openedPdf) }>Native Open</button>}
+                {openedPdf && (
+                    <div>
+                        <button onClick={() => handleAddTag()}>Add Tag</button>
+                        {isAddingTag && (
+                            <div>
+                                <input
+                                    type='text'
+                                    value={tagInput}
+                                    onChange={e => setTagInput(e.target.value)}
+                                    onKeyUp={handleTagInputKeyPress}
+                                    onBlur={()=> setIsAddingTag(false)}
+                                    autoFocus
+                                />
+                            </div>
+                        )}
+                        <button onClick={() => handleOpenPdf(openedPdf) }>Native Open</button>
+                    </div>
+                )}
                 {pdfUrl && <PdfViewerComponent pdfUrl={pdfUrl} /> }
             </div>
         </div>
