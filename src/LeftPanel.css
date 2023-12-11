@@ -1,13 +1,13 @@
 .LeftPanel {
     position: fixed;
     top: 0;
-    left: 0;
+    left: 20%;
     float: left;
     width: 20%;
     height: 100%;
     padding: 20px;
     box-sizing: border-box;
-    background-color: #151515; /* Set the background color to a dark color */
+    background-color: #212121; /* Set the background color to a dark color */
     color: white;
 }
 

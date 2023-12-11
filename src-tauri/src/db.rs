@@ -110,7 +110,7 @@ pub fn delete_from_files_table(id: i32) -> Result<usize> {
 // for Tags table
 pub fn select_all_tags() -> Result<Vec<Tags>> {
     let conn = create_connection();
-    let mut stmt = conn.prepare("SELECT name FROM Tags")?;
+    let mut stmt = conn.prepare("SELECT id, name FROM Tags")?;
     let tags_iter = stmt.query_map([], |row| {
         Ok(Tags {
             id: row.get(0)?,

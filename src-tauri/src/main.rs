@@ -48,9 +48,20 @@ fn add_tag(path: String, tag: String) -> Result<bool, String> {
     }
 }
 
+#[tauri::command]
+fn get_tag_list() -> Vec<db::Tags> {
+    let tags = match db::select_all_tags() {
+        Ok(tags) => tags,
+        Err(_) => {
+            Vec::new()
+        }
+    };
+    tags
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete, open_file_native, add_tag])
+        .invoke_handler(tauri::generate_handler![file_list, file_add, file_delete, open_file_native, add_tag, get_tag_list])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

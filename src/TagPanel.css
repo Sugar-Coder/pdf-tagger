@@ -1,0 +1,27 @@
+.tag-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    float: left;
+    width: 20%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #050404; /* Set the background color to a dark color */
+    color: white;
+}
+
+.tag-panel ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tag-panel li:hover {
+    background-color: #282525;
+}
+
+.tag-panel li.selected {
+    /* Your styles for selected li element */
+    background-color: #3a3939;
+}
